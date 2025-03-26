@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sideways Pyramid Flex Layout</title>
+  <style>
+    html,
+    body {
+      height: 95%;
+      width: 95%;
+      margin: 10;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    .container {
+      display: flex;
+      height: 100%;
+      width: 100%;
+    }
+
+    .col1,
+    .col2,
+    .col3 {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+
+    .col1 {
+      flex: 0 0 45%;
+    }
+
+    .col2 {
+      flex: 0 0 45%;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .col3 {
+      flex: 0 0 10%;
+    }
+
+    /* Column 1 Rows */
+    .col1 .row {
+      flex: 1;
+      border: 1px solid #aaa;
+    }
+
+    /* Column 2 Inner Columns */
+    .col2 .inner-column {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      flex: 1;
+      margin: 0 10px;
+    }
+
+    .col2 .inner-column .row {
+      border: 1px solid #88a;
+      margin-bottom: 10px;
+      flex: 1;
+    }
+
+    .col2 .inner-column .row:last-child {
+      margin-bottom: 0;
+    }
+
+    /* Adjusted heights for pyramid effect */
+    .col2 .inner-column:nth-child(1) {
+      height: 100%;
+    }
+
+    .col2 .inner-column:nth-child(2) {
+      height: 90%;
+    }
+
+    .col2 .inner-column:nth-child(3) {
+      height: 70%;
+    }
+
+    .col2 .inner-column:nth-child(4) {
+      height: 50%;
+    }
+
+    .col2 .inner-column:nth-child(5) {
+      height: 30%;
+    }
+
+    /* Column 3 Rows */
+    .col3 .top,
+    .col3 .bottom {
+      flex: 1;
+      border: 0px;
+    }
+
+    .col3 .middle {
+      flex: 0 0 20%;
+      border: 4px solid black;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      font-size: 30px;
+      align-self: start;
+      font-weight: bold;
+      border-radius: 15px;
+    }
+
+
+
+    .form-container {
+      display: flex;
+      flex-direction: column;
+      width: 90%;
+      margin-top: 20px;
+    }
+
+    .form-row {
+      display: flex;
+      margin-bottom: 5px;
+    }
+
+    .form-row label {
+      flex: 1;
+      text-align: right;
+      padding-right: 10px;
+
+      font-size: 20px;
+    }
+
+    .form-row input,
+    .form-row textarea {
+      flex: 6;
+    }
+
+
+    .checkbox-row {
+      display: flex;
+      align-items: center;
+      /* Align checkbox and label vertically */
+    }
+
+    .checkbox-row label {
+      flex: 1;
+      text-align: right;
+      /* Align label text to right like other labels */
+      padding-right: 10px;
+      /* Match padding of other labels */
+    }
+
+    .checkbox-row input[type="checkbox"] {
+      flex: 1;
+      /* Match the flex value of other inputs */
+      width: auto;
+      /* Let the checkbox determine its own width */
+      margin-right: 0;
+      /* Remove any default margins */
+      text-align: left;
+
+      align-items: left;
+      justify-content: left;
+    }
+
+    .checkbox-row div {
+      flex: 5;
+    }
+
+    .content {
+      padding: 10px;
+      margin: 10px;
+    }
+
+    /* Add to your existing CSS */
+    .hidden-proof {
+      -webkit-text-security: disc;
+      /* For WebKit browsers */
+      text-security: disc;
+      /* Standard property */
+      font-family: monospace;
+      /* Consistent character width */
+    }
+
+    /* Fallback for Firefox which doesn't support text-security */
+    textarea[type="password"] {
+      font-family: monospace;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="col1">
+
+      <!-- counterparty1 -->
+      <div class="row">
+        <form class="form-container">
+          <div class="form-row">
+            <label for="counterparty1">Balance 1:</label>
+            <input type="number" id="counterparty1" name="counterparty1">
+          </div>
+          <div class="form-row">
+            <label for="counterparty1-hash">Hash:</label>
+            <input type="text" id="counterparty1-hash" name="counterparty1-hash" readonly>
+          </div>
+          <div class="form-row checkbox-row">
+            <label for="hide-counterparty1">Hide:</label>
+            <input type="checkbox" id="hide-counterparty1" name="hide-counterparty1">
+            <div></div>
+          </div>
+        </form>
+      </div>
+
+      <!-- counterparty2 -->
+      <div class="row">
+        <form class="form-container">
+          <div class="form-row">
+            <label for="counterparty2">Balance 2:</label>
+            <input type="number" id="counterparty2" name="counterparty2">
+          </div>
+          <div class="form-row">
+            <label for="counterparty2-hash">Hash:</label>
+            <input type="text" id="counterparty2-hash" name="counterparty2-hash" readonly>
+          </div>
+          <div class="form-row checkbox-row">
+            <label for="hide-counterparty2">Hide:</label>
+            <input type="checkbox" id="hide-counterparty2" name="hide-counterparty2">
+            <div></div>
+          </div>
+        </form>
+      </div>
+      <!-- AMOUNT -->
+      <div class="row">
+
+        <form class="form-container">
+          <div class="form-row">
+            <label for="amount">Amount:</label>
+            <input type="number" id="amount" name="amount">
+          </div>
+          <div class="form-row">
+            <label for="amount-hash">Hash:</label>
+            <input type="text" id="amount-hash" name="amount-hash" readonly>
+          </div>
+          <div class="form-row checkbox-row">
+            <label for="hide-amount">Hide:</label>
+            <input type="checkbox" id="hide-amount" name="hide-amount">
+            <div></div>
+          </div>
+        </form>
+      </div>
+      <!-- PROOF -->
+      <div class="row">
+        <form class="form-container">
+          <div class="form-row">
+            <label for="proof">Proof:</label>
+            <textarea cols="80" rows="4" id="proof" name="proof">return balance1 + amount == balance2</textarea>
+          </div>
+          <div class="form-row">
+            <label for="proof-hash">Hash:</label>
+            <input type="text" id="proof-hash" name="proof-hash" readonly>
+          </div>
+          <div class="form-row checkbox-row">
+            <label for="hide-proof">Hide:</label>
+            <input type="checkbox" id="hide-proof" name="hide-proof">
+            <div></div>
+          </div>
+        </form>
+      </div>
+      <!-- RESULT -->
+      <div class="row">
+
+        <form class="form-container">
+
+          <div class="form-row checkbox-row">
+            <label for="result">Result:</label>
+            <input type="text" id="result" name="result" readonly />
+          </div>
+          <div class="form-row">
+            <label for="result-hash">Hash:</label>
+            <input type="text" id="result-hash" name="result-hash" readonly>
+          </div>
+        </form>
+
+      </div>
+      <!-- NONCE -->
+      <div class="row">
+        <form class="form-container">
+          <div class="form-row">
+            <label for="nonce">Nonce:</label>
+            <textarea cols="80" rows="2" id="nonce" name="nonce"></textarea>
+          </div>
+          <div class="form-row">
+            <label for="nonce-hash">Hash:</label>
+            <input type="text" id="nonce-hash" name="nonce-hash" readonly>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Second Column (Sideways Pyramid) -->
+    <div class="col2">
+      <div class="inner-column">
+        <div id="r1-1" class="row"></div>
+        <div id="r1-2" class="row"></div>
+        <div id="r1-3" class="row"></div>
+        <div id="r1-4" class="row"></div>
+        <div id="r1-5" class="row"></div>
+        <div id="r1-6" class="row"></div>
+      </div>
+      <div class="inner-column">
+        <div id="r2-1" class="row"></div>
+        <div id="r2-2" class="row"></div>
+        <div id="r2-3" class="row"></div>
+        <div id="r2-4" class="row"></div>
+        <div id="r2-5" class="row"></div>
+      </div>
+      <div class="inner-column">
+        <div id="r3-1" class="row"></div>
+        <div id="r3-2" class="row"></div>
+        <div id="r3-3" class="row"></div>
+        <div id="r3-4" class="row"></div>
+      </div>
+      <div class="inner-column">
+        <div id="r4-1" class="row"></div>
+        <div id="r4-2" class="row"></div>
+        <div id="r4-3" class="row"></div>
+      </div>
+      <div class="inner-column">
+        <div id="r5-1" class="row"></div>
+        <div id="r5-2" class="row"></div>
+      </div>
+    </div>
+
+    <!-- Third Column -->
+    <div class="col3">
+      <div class="top"></div>
+      <div class="middle" id="r6-1"></div>
+      <div class="bottom"></div>
+    </div>
+  </div>
+
+
+
+
+  <script>
+
+    // Helper function to convert hex to RGB
+    const hexToRgb = (hex) => {
+
+      // Check if it's already in RGB format
+      if (hex.startsWith('rgb')) {
+        const [r, g, b] = hex.match(/\d+/g).map(Number);
+        return { r, g, b };
+      }
+
+      hex = hex.replace('#', '');
+      return {
+        r: parseInt(hex.substring(0, 2), 16),
+        g: parseInt(hex.substring(2, 4), 16),
+        b: parseInt(hex.substring(4, 6), 16)
+      };
+    };
+
+
+    // Helper function to convert RGB back to hex
+    const rgbToHex = (r, g, b) => {
+      const toHex = (num) => num.toString(16).padStart(2, '0');
+      return '#' + toHex(r) + toHex(g) + toHex(b);
+    };
+    function combine(color1, color2) {
+      // Convert both colors to RGB
+      const rgb1 = hexToRgb(color1);
+      const rgb2 = hexToRgb(color2);
+
+      // Average the RGB values
+      const combinedRgb = {
+        r: Math.round((rgb1.r + rgb2.r) / 2),
+        g: Math.round((rgb1.g + rgb2.g) / 2),
+        b: Math.round((rgb1.b + rgb2.b) / 2),
+      };
+
+      // Convert averaged RGB back to hex
+      return rgbToHex(combinedRgb.r, combinedRgb.g, combinedRgb.b);
+    }
+
+
+    function hashToHexColor(hash, minBrightness = 0.3, maxBrightness = 0.8) {
+      if (!hash) {
+        return '#000000';
+      }
+      if (!/^[0-9a-f]+$/i.test(hash)) {
+        return '#ffffff';
+      }
+
+      let hexColor;
+      let isValid = false;
+      let attempts = 0;
+      const maxAttempts = 10;
+
+      // Try to find a color within brightness range
+      while (!isValid && attempts < maxAttempts) {
+        // Take different 6-character segments with each attempt
+        const startPos = attempts * 6 % (hash.length - 6);
+        hexColor = hash.substring(startPos, startPos + 6).padEnd(6, '0');
+
+        // Convert to RGB to check brightness
+        const r = parseInt(hexColor.substring(0, 2), 16) / 255;
+        const g = parseInt(hexColor.substring(2, 4), 16) / 255;
+        const b = parseInt(hexColor.substring(4, 6), 16) / 255;
+
+        // Calculate perceived brightness
+        const brightness = 0.299 * r + 0.587 * g + 0.114 * b;
+
+        if (brightness >= minBrightness && brightness <= maxBrightness) {
+          isValid = true;
+        }
+
+        attempts++;
+      }
+
+      return `#${hexColor}`;
+    }
+
+
+
+    /**
+     * INPUTS
+    */
+
+    const hideCounterparty1Checkbox = document.getElementById('hide-counterparty1');
+    const counterparty1Input = document.getElementById('counterparty1');
+    const counterparty1HashInput = document.getElementById('counterparty1-hash');
+
+    const hideCounterparty2Checkbox = document.getElementById('hide-counterparty2');
+    const counterparty2Input = document.getElementById('counterparty2');
+    const counterparty2HashInput = document.getElementById('counterparty2-hash');
+
+    const hideAmountCheckbox = document.getElementById('hide-amount');
+    const amountInput = document.getElementById('amount');
+    const amountHashInput = document.getElementById('amount-hash');
+
+    const hideProofCheckbox = document.getElementById('hide-proof');
+    const proofTextarea = document.getElementById('proof');
+    const proofHashInput = document.getElementById('proof-hash');
+
+    const resultsDiv = document.getElementById('result');
+    const resultHashInput = document.getElementById('result-hash');
+
+    const nonceTextarea = document.getElementById('nonce');
+    const nonceHashInput = document.getElementById('nonce-hash');
+
+
+    const getElm = (row, col) => document.getElementById(`r${row}-${col}`);
+
+    function updateColor(r, c) {
+      const a = getElm(r - 1, c)
+      if (a) {
+        const b = getElm(r - 1, c + 1)
+        if (b) {
+          const color = combine(a.style.backgroundColor, b.style.backgroundColor)
+          const elm = getElm(r, c)
+          if (elm) {
+            elm.style.backgroundColor = color;
+            elm.innerHTML = `<div style="align-items: center; justify-content: center; display: flex; width: 100%; height: 100%;">${color.slice(1)}</div>`;
+          } else {
+            console.error(`C not found ${r},${c}`);
+          }
+        } else {
+          console.error(`B not found ${r - 1},${c}`);
+        }
+      } else {
+        console.error(`A not found ${r - 1},${c + 1}`);
+      }
+    }
+
+    function updateColors() {
+      getElm(1, 1).style.backgroundColor = hashToHexColor(counterparty1HashInput.value);
+      getElm(1, 2).style.backgroundColor = hashToHexColor(counterparty2HashInput.value);
+      getElm(1, 3).style.backgroundColor = hashToHexColor(amountHashInput.value);
+      getElm(1, 4).style.backgroundColor = hashToHexColor(proofHashInput.value);
+      getElm(1, 5).style.backgroundColor = hashToHexColor(resultHashInput.value);
+      getElm(1, 6).style.backgroundColor = hashToHexColor(nonceHashInput.value);
+
+      //hashToHexColor
+      // update our input colors
+
+
+
+      updateColor(2, 1);
+      updateColor(2, 2);
+      updateColor(2, 3);
+      updateColor(2, 4);
+      updateColor(2, 5);
+
+      updateColor(3, 1);
+      updateColor(3, 2);
+      updateColor(3, 3);
+      updateColor(3, 4);
+
+      updateColor(4, 1);
+      updateColor(4, 2);
+      updateColor(4, 3);
+
+      updateColor(5, 1);
+      updateColor(5, 2);
+
+      updateColor(6, 1);
+    }
+
+    hideCounterparty1Checkbox.addEventListener('change', function () {
+      counterparty1Input.type = this.checked ? 'password' : 'number';
+    });
+
+    hideCounterparty2Checkbox.addEventListener('change', function () {
+      counterparty2Input.type = this.checked ? 'password' : 'number';
+    });
+
+    hideAmountCheckbox.addEventListener('change', function () {
+      amountInput.type = this.checked ? 'password' : 'number';
+    });
+
+    hideProofCheckbox.addEventListener('change', function () {
+      const proofTextarea = document.getElementById('proof');
+      if (this.checked) {
+        proofTextarea.style.webkitTextSecurity = 'disc';
+        proofTextarea.style.textSecurity = 'disc';
+      } else {
+        proofTextarea.style.webkitTextSecurity = 'none';
+        proofTextarea.style.textSecurity = 'none';
+      }
+    });
+
+
+
+    function executeWithTimeout(code, variables = {}, timeout = 1000) {
+      return new Promise((resolve, reject) => {
+        const workerCode = `
+      self.onmessage = function(e) {
+        const { code, variables } = e.data;
+        try {
+          // Create function with injected variables
+          const fn = new Function(
+            ...Object.keys(variables),
+            \`
+              try {
+                \${code}
+              } catch(err) {
+                return { __error: err.message };
+              }
+            \`
+          );
+          
+          // Execute with variables as arguments
+          const result = fn(...Object.values(variables));
+          
+          postMessage({
+            result: result?.__error ? { error: result.__error } : { data: result }
+          });
+        } catch (err) {
+          postMessage({ error: err.message });
+        }
+      };
+    `;
+
+        const worker = new Worker(URL.createObjectURL(
+          new Blob([workerCode], { type: 'application/javascript' })
+        ));
+
+        worker.onmessage = (e) => {
+          if (e.data.error) {
+            reject(new Error(e.data.error));
+          } else if (e.data.result?.error) {
+            reject(new Error(e.data.result.error));
+          } else {
+            resolve(e.data.result?.data);
+          }
+          worker.terminate();
+        };
+
+        worker.postMessage({ code, variables });
+
+        setTimeout(() => {
+          worker.terminate();
+          reject(new Error('Execution timed out after ' + timeout + 'ms'));
+        }, timeout);
+      });
+    }
+
+
+    async function updateResultHash() {
+      if (resultsDiv.value) {
+        try {
+          resultHashInput.value = await generateSHA256Hash(resultsDiv.value);
+        } catch (error) {
+          resultHashInput.value = 'Error generating hash';
+        }
+      } else {
+        resultHashInput.value = await generateSHA256Hash('');
+      }
+      updateColors();
+    }
+
+    async function updateNonceHash() {
+      if (nonceTextarea.value) {
+        try {
+          nonceHashInput.value = await generateSHA256Hash(nonceTextarea.value);
+        } catch (error) {
+          nonceHashInput.value = 'Error generating hash';
+        }
+      } else {
+        nonceHashInput.value = await generateSHA256Hash('');
+      }
+
+      updateColors();
+    }
+
+    // Main execution function
+    async function executeProofCode() {
+
+      try {
+
+        const variables = {
+          balance1: Number(counterparty1Input.value),
+          balance2: Number(counterparty2Input.value),
+          amount: Number(amountInput.value)
+        };
+
+        const result = await executeWithTimeout(
+          proofTextarea.value,
+          variables,
+          2000 // 2 second timeout
+        );
+
+        resultsDiv.value = JSON.stringify(result, null, 2);
+
+      } catch (error) {
+        resultsDiv.value = `Error: ${error.message}`;
+        console.error('Execution error:', error);
+      }
+
+      updateResultHash();
+    }
+
+    async function updateCounterparty2Hash() {
+      if (counterparty2Input.value) {
+        try {
+          counterparty2HashInput.value = await generateSHA256Hash(counterparty2Input.value);
+        } catch (error) {
+          counterparty2HashInput.value = 'Error generating hash';
+        }
+      } else {
+        counterparty2HashInput.value = await generateSHA256Hash('');
+      }
+      updateColors();
+    }
+
+    async function updateCounterparty1Hash() {
+      if (counterparty1Input.value) {
+        try {
+          counterparty1HashInput.value = await generateSHA256Hash(counterparty1Input.value);
+        } catch (error) {
+          counterparty1HashInput.value = 'Error generating hash';
+        }
+      } else {
+        counterparty1HashInput.value = await generateSHA256Hash('');
+      }
+      updateColors();
+    }
+
+    async function updateAmountHash() {
+      if (amountInput.value) {
+        try {
+          amountHashInput.value = await generateSHA256Hash(amountInput.value);
+        } catch (error) {
+          amountHashInput.value = 'Error generating hash';
+        }
+      } else {
+        amountHashInput.value = await generateSHA256Hash('');
+      }
+      updateColors();
+    }
+
+    async function updateProofHash() {
+      if (proofTextarea.value) {
+        try {
+          proofHashInput.value = await generateSHA256Hash(proofHashInput.value);
+        } catch (error) {
+          proofHashInput.value = 'Error generating hash';
+        }
+      } else {
+        proofHashInput.value = await generateSHA256Hash('');
+      }
+      updateColors();
+    }
+
+
+
+    proofTextarea.addEventListener('input', executeProofCode);
+    counterparty1Input.addEventListener('input', executeProofCode);
+    counterparty2Input.addEventListener('input', executeProofCode);
+    amountInput.addEventListener('input', executeProofCode);
+
+    updateProofHash();
+    updateCounterparty1Hash();
+    updateCounterparty2Hash();
+    updateAmountHash();
+    updateResultHash();
+    updateNonceHash();
+
+    // Function to generate SHA-256 hash
+    async function generateSHA256Hash(message) {
+      // Encode the message as UTF-8
+      const msgBuffer = new TextEncoder().encode(message);
+
+      // Hash the message
+      const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+
+      // Convert ArrayBuffer to hex string
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+
+      return hashHex;
+    }
+
+
+    // Add event listener for input changes
+    counterparty1Input.addEventListener('input', async function () {
+      updateCounterparty1Hash();
+    });
+
+
+    counterparty2Input.addEventListener('input', async function () {
+      updateCounterparty2Hash();
+    });
+
+    amountInput.addEventListener('input', async function () {
+      updateAmountHash();
+    });
+
+    proofTextarea.addEventListener('input', async function () {
+      updateProofHash();
+    });
+
+    nonceTextarea.addEventListener('input', async function () {
+      updateNonceHash();
+    });
+
+    executeProofCode().then(() => {
+      updateColors();
+    });
+  </script>
+</body>
+
+</html>
