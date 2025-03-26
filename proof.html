@@ -237,17 +237,33 @@
       </div>
       <!-- RESULT -->
       <div class="row">
+
+
         <div class="content">
           <div>Result:</div>
-          <div id="result" style="font-size: 1.5em; border: 1px solid #aaa; padding: 10px;"></div>
+          <div id="result" name="result"></div>
         </div>
+
+        <form class="form-container">
+          <div class="form-row">
+            <label for="result-hash">Hash:</label>
+            <input type="text" id="result-hash" name="result-hash" readonly>
+          </div>
+        </form>
+
       </div>
       <!-- NONCE -->
       <div class="row">
-        <div class="content">
-          <div>Nonce:</div>
-          <textarea cols="80" rows="2" id="nonce" name="nonce"></textarea>
-        </div>
+        <form class="form-container">
+          <div class="form-row">
+            <label for="nonce">Nonce:</label>
+            <textarea cols="80" rows="2" id="nonce" name="nonce"></textarea>
+          </div>
+          <div class="form-row">
+            <label for="nonce-hash">Hash:</label>
+            <input type="text" id="nonce-hash" name="nonce-hash" readonly>
+          </div>
+        </form>
       </div>
     </div>
 
@@ -341,6 +357,10 @@
     const proofHashInput = document.getElementById('proof-hash');
 
     const resultsDiv = document.getElementById('result');
+    const resultHashInput = document.getElementById('result-hash');
+
+    const nonceTextarea = document.getElementById('nonce');
+    const nonceHashInput = document.getElementById('nonce-hash');
 
     hideBalanceCheckbox.addEventListener('change', function () {
       balanceInput.type = this.checked ? 'password' : 'number';
@@ -417,11 +437,36 @@
       });
     }
 
+
+    async function updateResultHash() {
+      if (resultsDiv.textContent) {
+        try {
+          resultHashInput.value = await generateSHA256Hash(resultsDiv.textContent);
+        } catch (error) {
+          resultHashInput.value = 'Error generating hash';
+        }
+      } else {
+        resultHashInput.value = await generateSHA256Hash('');
+      }
+    }
+
+    async function updateNonceHash() {
+      if (nonceTextarea.value) {
+        try {
+          nonceHashInput.value = await generateSHA256Hash(nonceTextarea.value);
+        } catch (error) {
+          nonceHashInput.value = 'Error generating hash';
+        }
+      } else {
+        nonceHashInput.value = await generateSHA256Hash('');
+      }
+    }
+
     // Main execution function
     async function executeProofCode() {
 
       try {
-        resultsDiv.textContent = 'Executing...';
+        // resultsDiv.textContent = 'Executing...';
 
         const variables = {
           balance: Number(balanceInput.value),
@@ -434,15 +479,14 @@
           2000 // 2 second timeout
         );
 
-        resultsDiv.innerHTML = `
-      <strong>Result:</strong> ${JSON.stringify(result, null, 2)}<br>
-      <strong>Variables:</strong> ${JSON.stringify(variables, null, 2)}
-    `;
+        resultsDiv.innerHTML = JSON.stringify(result, null, 2);
 
       } catch (error) {
         resultsDiv.innerHTML = `<strong>Error:</strong> ${error.message}`;
         console.error('Execution error:', error);
       }
+
+      updateResultHash();
     }
 
     async function updateBalanceHash() {
@@ -481,6 +525,8 @@
       }
     }
 
+
+
     proofTextarea.addEventListener('input', executeProofCode);
     balanceInput.addEventListener('input', executeProofCode);
     amountInput.addEventListener('input', executeProofCode);
@@ -488,6 +534,8 @@
     updateProofHash();
     updateBalanceHash();
     updateAmountHash();
+    updateResultHash();
+    updateNonceHash();
 
     // Function to generate SHA-256 hash
     async function generateSHA256Hash(message) {
@@ -517,6 +565,10 @@
 
     proofTextarea.addEventListener('input', async function () {
       updateProofHash();
+    });
+
+    nonceTextarea.addEventListener('input', async function () {
+      updateNonceHash();
     });
   </script>
 </body>
