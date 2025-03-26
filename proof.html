@@ -154,6 +154,11 @@
     .checkbox-row div {
       flex: 5;
     }
+
+    .content {
+      padding: 10px;
+      margin: 10px;
+    }
   </style>
 </head>
 
@@ -198,11 +203,26 @@
         </form>
       </div>
       <!-- PROOF -->
-      <div class="row">Row 3</div>
+      <div class="row">
+        <div class="content">
+          <div>Proof:</div>
+          <textarea cols="80" rows="4" id="proof" name="proof"></textarea>
+        </div>
+      </div>
       <!-- RESULT -->
-      <div class="row">Row 4</div>
+      <div class="row">
+        <div class="content">
+          <div>Result:</div>
+          <div id="result" style="font-size: 1.5em; border: 1px solid #aaa; padding: 10px;"></div>
+        </div>
+      </div>
       <!-- NONCE -->
-      <div class="row">Row 5</div>
+      <div class="row">
+        <div class="content">
+          <div>Nonce:</div>
+          <textarea cols="80" rows="2" id="nonce" name="nonce"></textarea>
+        </div>
+      </div>
     </div>
 
     <!-- Second Column (Sideways Pyramid) -->
