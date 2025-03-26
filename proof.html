@@ -159,6 +159,21 @@
       padding: 10px;
       margin: 10px;
     }
+
+    /* Add to your existing CSS */
+    .hidden-proof {
+      -webkit-text-security: disc;
+      /* For WebKit browsers */
+      text-security: disc;
+      /* Standard property */
+      font-family: monospace;
+      /* Consistent character width */
+    }
+
+    /* Fallback for Firefox which doesn't support text-security */
+    textarea[type="password"] {
+      font-family: monospace;
+    }
   </style>
 </head>
 
@@ -204,10 +219,21 @@
       </div>
       <!-- PROOF -->
       <div class="row">
-        <div class="content">
-          <div>Proof:</div>
-          <textarea cols="80" rows="4" id="proof" name="proof"></textarea>
-        </div>
+        <form class="form-container">
+          <div class="form-row">
+            <label for="proof">Proof:</label>
+            <textarea cols="80" rows="4" id="proof" name="proof">return balance - amount >= 0</textarea>
+          </div>
+          <div class="form-row">
+            <label for="proof-hash">Hash:</label>
+            <input type="text" id="proof-hash" name="proof-hash" readonly>
+          </div>
+          <div class="form-row checkbox-row">
+            <label for="hide-proof">Hide:</label>
+            <input type="checkbox" id="hide-proof" name="hide-proof">
+            <div></div>
+          </div>
+        </form>
       </div>
       <!-- RESULT -->
       <div class="row">
@@ -305,10 +331,15 @@
     const hideBalanceCheckbox = document.getElementById('hide-balance');
     const balanceInput = document.getElementById('balance');
     const balanceHashInput = document.getElementById('balance-hash');
+
     const hideAmountCheckbox = document.getElementById('hide-amount');
     const amountInput = document.getElementById('amount');
     const amountHashInput = document.getElementById('amount-hash');
+
+    const hideProofCheckbox = document.getElementById('hide-proof');
     const proofTextarea = document.getElementById('proof');
+    const proofHashInput = document.getElementById('proof-hash');
+
     const resultsDiv = document.getElementById('result');
 
     hideBalanceCheckbox.addEventListener('change', function () {
@@ -319,6 +350,16 @@
       amountInput.type = this.checked ? 'password' : 'number';
     });
 
+    hideProofCheckbox.addEventListener('change', function () {
+      const proofTextarea = document.getElementById('proof');
+      if (this.checked) {
+        proofTextarea.style.webkitTextSecurity = 'disc';
+        proofTextarea.style.textSecurity = 'disc';
+      } else {
+        proofTextarea.style.webkitTextSecurity = 'none';
+        proofTextarea.style.textSecurity = 'none';
+      }
+    });
 
 
 
@@ -404,10 +445,49 @@
       }
     }
 
+    async function updateBalanceHash() {
+      if (balanceInput.value) {
+        try {
+          balanceHashInput.value = await generateSHA256Hash(balanceInput.value);
+        } catch (error) {
+          balanceHashInput.value = 'Error generating hash';
+        }
+      } else {
+        balanceHashInput.value = await generateSHA256Hash('');
+      }
+    }
 
+    async function updateAmountHash() {
+      if (amountInput.value) {
+        try {
+          amountHashInput.value = await generateSHA256Hash(amountInput.value);
+        } catch (error) {
+          amountHashInput.value = 'Error generating hash';
+        }
+      } else {
+        amountHashInput.value = await generateSHA256Hash('');
+      }
+    }
 
+    async function updateProofHash() {
+      if (proofTextarea.value) {
+        try {
+          proofHashInput.value = await generateSHA256Hash(proofHashInput.value);
+        } catch (error) {
+          proofHashInput.value = 'Error generating hash';
+        }
+      } else {
+        proofHashInput.value = await generateSHA256Hash('');
+      }
+    }
 
     proofTextarea.addEventListener('input', executeProofCode);
+    balanceInput.addEventListener('input', executeProofCode);
+    amountInput.addEventListener('input', executeProofCode);
+
+    updateProofHash();
+    updateBalanceHash();
+    updateAmountHash();
 
     // Function to generate SHA-256 hash
     async function generateSHA256Hash(message) {
@@ -427,36 +507,16 @@
 
     // Add event listener for input changes
     balanceInput.addEventListener('input', async function () {
-      const balanceValue = balanceInput.value;
-
-      if (balanceValue) {
-        try {
-          const hash = await generateSHA256Hash(balanceValue);
-          balanceHashInput.value = hash;
-        } catch (error) {
-          console.error('Error generating hash:', error);
-          balanceHashInput.value = 'Error generating hash';
-        }
-      } else {
-        balanceHashInput.value = '';
-      }
+      updateBalanceHash();
     });
 
 
     amountInput.addEventListener('input', async function () {
-      const amountValue = amountInput.value;
+      updateAmountHash();
+    });
 
-      if (amountValue) {
-        try {
-          const hash = await generateSHA256Hash(amountValue);
-          amountHashInput.value = hash;
-        } catch (error) {
-          console.error('Error generating hash:', error);
-          amountHashInput.value = 'Error generating hash';
-        }
-      } else {
-        amountHashInput.value = '';
-      }
+    proofTextarea.addEventListener('input', async function () {
+      updateProofHash();
     });
   </script>
 </body>
