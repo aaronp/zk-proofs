@@ -100,6 +100,55 @@
       align-items: center;
       justify-content: center;
     }
+
+
+
+    .form-container {
+      display: flex;
+      flex-direction: column;
+      width: 90%;
+    }
+
+    .form-row {
+      display: flex;
+      margin-bottom: 5px;
+    }
+
+    .form-row label {
+      flex: 1;
+      text-align: right;
+      padding-right: 10px;
+    }
+
+    .form-row input,
+    .form-row textarea {
+      flex: 2;
+    }
+
+
+    .checkbox-row {
+      display: flex;
+      align-items: center;
+      /* Align checkbox and label vertically */
+    }
+
+    .checkbox-row label {
+      flex: 1;
+      text-align: right;
+      /* Align label text to right like other labels */
+      padding-right: 10px;
+      /* Match padding of other labels */
+    }
+
+    .checkbox-row input[type="checkbox"] {
+      flex: 2;
+      /* Match the flex value of other inputs */
+      width: auto;
+      /* Let the checkbox determine its own width */
+      margin: 0;
+      /* Remove any default margins */
+      text-align: left;
+    }
   </style>
 </head>
 
@@ -107,7 +156,22 @@
   <div class="container">
     <!-- First Column -->
     <div class="col1">
-      <div class="row">Row 1</div>
+      <div class="row">
+        <form class="form-container">
+          <div class="form-row">
+            <label for="balance">Balance:</label>
+            <input type="number" id="balance" name="balance">
+          </div>
+          <div class="form-row">
+            <label for="balance-hash">Hash:</label>
+            <input type="text" id="balance-hash" name="balance-hash" readonly>
+          </div>
+          <div class="form-row checkbox-row">
+            <label for="hide-balance">Hide:</label>
+            <input type="checkbox" id="hide-balance" name="hide-balance">
+          </div>
+        </form>
+      </div>
       <div class="row">Row 2</div>
       <div class="row">Row 3</div>
       <div class="row">Row 4</div>
