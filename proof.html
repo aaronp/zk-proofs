@@ -419,25 +419,23 @@
 
     const getElm = (row, col) => document.getElementById(`r${row}-${col}`);
 
+    function setLabel(elm) {
+      const { r, b, g } = hexToRgb(elm.style.backgroundColor);
+      const color = rgbToHex(r, b, g);
+
+      elm.innerHTML = `<div style="align-items: center; justify-content: center; display: flex; width: 100%; height: 100%;">${color.slice(1)}</div>`;
+    }
+
     function updateColor(r, c) {
       const a = getElm(r - 1, c)
-      if (a) {
-        const b = getElm(r - 1, c + 1)
-        if (b) {
-          const color = combine(a.style.backgroundColor, b.style.backgroundColor)
-          const elm = getElm(r, c)
-          if (elm) {
-            elm.style.backgroundColor = color;
-            elm.innerHTML = `<div style="align-items: center; justify-content: center; display: flex; width: 100%; height: 100%;">${color.slice(1)}</div>`;
-          } else {
-            console.error(`C not found ${r},${c}`);
-          }
-        } else {
-          console.error(`B not found ${r - 1},${c}`);
-        }
-      } else {
-        console.error(`A not found ${r - 1},${c + 1}`);
-      }
+
+      const b = getElm(r - 1, c + 1)
+
+      const color = combine(a.style.backgroundColor, b.style.backgroundColor)
+      const elm = getElm(r, c)
+
+      elm.style.backgroundColor = color;
+      setLabel(elm);
     }
 
     function updateColors() {
@@ -447,22 +445,17 @@
       getElm(1, 4).style.backgroundColor = hashToHexColor(resultHashInput.value);
       getElm(1, 5).style.backgroundColor = hashToHexColor(nonceHashInput.value);
 
-      //hashToHexColor
-      // update our input colors
+      for (let i = 1; i <= 5; i++) {
+        setLabel(getElm(1, i));
+      }
 
 
-
-      updateColor(2, 1);
-      updateColor(2, 2);
-      updateColor(2, 3);
-      updateColor(2, 4);
-      updateColor(3, 1);
-      updateColor(3, 2);
-      updateColor(3, 3);
-      updateColor(4, 1);
-      updateColor(4, 2);
-      updateColor(5, 1);
-
+      for (let i = 2; i <= 5; i++) {
+        const rows = 6 - i;
+        for (let j = 1; j <= rows; j++) {
+          updateColor(i, j);
+        }
+      }
     }
 
     hideBalanceCheckbox.addEventListener('change', function () {
