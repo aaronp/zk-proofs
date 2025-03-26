@@ -297,6 +297,7 @@
       return `#${hexColor}`;
     }
 
+
     /**
      * INPUTS
     */
@@ -307,6 +308,8 @@
     const hideAmountCheckbox = document.getElementById('hide-amount');
     const amountInput = document.getElementById('amount');
     const amountHashInput = document.getElementById('amount-hash');
+    const proofTextarea = document.getElementById('proof');
+    const resultsDiv = document.getElementById('result');
 
     hideBalanceCheckbox.addEventListener('change', function () {
       balanceInput.type = this.checked ? 'password' : 'number';
@@ -315,6 +318,96 @@
     hideAmountCheckbox.addEventListener('change', function () {
       amountInput.type = this.checked ? 'password' : 'number';
     });
+
+
+
+
+    function executeWithTimeout(code, variables = {}, timeout = 1000) {
+      return new Promise((resolve, reject) => {
+        const workerCode = `
+      self.onmessage = function(e) {
+        const { code, variables } = e.data;
+        try {
+          // Create function with injected variables
+          const fn = new Function(
+            ...Object.keys(variables),
+            \`
+              try {
+                \${code}
+              } catch(err) {
+                return { __error: err.message };
+              }
+            \`
+          );
+          
+          // Execute with variables as arguments
+          const result = fn(...Object.values(variables));
+          
+          postMessage({
+            result: result?.__error ? { error: result.__error } : { data: result }
+          });
+        } catch (err) {
+          postMessage({ error: err.message });
+        }
+      };
+    `;
+
+        const worker = new Worker(URL.createObjectURL(
+          new Blob([workerCode], { type: 'application/javascript' })
+        ));
+
+        worker.onmessage = (e) => {
+          if (e.data.error) {
+            reject(new Error(e.data.error));
+          } else if (e.data.result?.error) {
+            reject(new Error(e.data.result.error));
+          } else {
+            resolve(e.data.result?.data);
+          }
+          worker.terminate();
+        };
+
+        worker.postMessage({ code, variables });
+
+        setTimeout(() => {
+          worker.terminate();
+          reject(new Error('Execution timed out after ' + timeout + 'ms'));
+        }, timeout);
+      });
+    }
+
+    // Main execution function
+    async function executeProofCode() {
+
+      try {
+        resultsDiv.textContent = 'Executing...';
+
+        const variables = {
+          balance: Number(balanceInput.value),
+          amount: Number(amountInput.value)
+        };
+
+        const result = await executeWithTimeout(
+          proofTextarea.value,
+          variables,
+          2000 // 2 second timeout
+        );
+
+        resultsDiv.innerHTML = `
+      <strong>Result:</strong> ${JSON.stringify(result, null, 2)}<br>
+      <strong>Variables:</strong> ${JSON.stringify(variables, null, 2)}
+    `;
+
+      } catch (error) {
+        resultsDiv.innerHTML = `<strong>Error:</strong> ${error.message}`;
+        console.error('Execution error:', error);
+      }
+    }
+
+
+
+
+    proofTextarea.addEventListener('input', executeProofCode);
 
     // Function to generate SHA-256 hash
     async function generateSHA256Hash(message) {
