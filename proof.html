@@ -242,13 +242,12 @@
       <!-- RESULT -->
       <div class="row">
 
-
-        <div class="content">
-          <div>Result:</div>
-          <div id="result" name="result"></div>
-        </div>
-
         <form class="form-container">
+
+          <div class="form-row checkbox-row">
+            <label for="result">Result:</label>
+            <input type="text" id="result" name="result" readonly />
+          </div>
           <div class="form-row">
             <label for="result-hash">Hash:</label>
             <input type="text" id="result-hash" name="result-hash" readonly>
@@ -423,7 +422,7 @@
           const elm = getElm(r, c)
           if (elm) {
             elm.style.backgroundColor = color;
-            elm.innerHTML = `<div style="align-items: center; justify-content: center; display: flex; width: 100%; height: 100%;">${r},${c}: ${color}</div>`;
+            elm.innerHTML = `<div style="align-items: center; justify-content: center; display: flex; width: 100%; height: 100%;">${color.slice(1)}</div>`;
           } else {
             console.error(`C not found ${r},${c}`);
           }
@@ -537,9 +536,9 @@
 
 
     async function updateResultHash() {
-      if (resultsDiv.textContent) {
+      if (resultsDiv.value) {
         try {
-          resultHashInput.value = await generateSHA256Hash(resultsDiv.textContent);
+          resultHashInput.value = await generateSHA256Hash(resultsDiv.value);
         } catch (error) {
           resultHashInput.value = 'Error generating hash';
         }
@@ -579,10 +578,10 @@
           2000 // 2 second timeout
         );
 
-        resultsDiv.innerHTML = JSON.stringify(result, null, 2);
+        resultsDiv.value = JSON.stringify(result, null, 2);
 
       } catch (error) {
-        resultsDiv.innerHTML = `<strong>Error:</strong> ${error.message}`;
+        resultsDiv.value = `Error: ${error.message}`;
         console.error('Execution error:', error);
       }
 
