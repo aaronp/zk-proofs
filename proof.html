@@ -107,6 +107,7 @@
       display: flex;
       flex-direction: column;
       width: 90%;
+      margin-top: 20px;
     }
 
     .form-row {
@@ -122,7 +123,7 @@
 
     .form-row input,
     .form-row textarea {
-      flex: 2;
+      flex: 6;
     }
 
 
@@ -141,20 +142,24 @@
     }
 
     .checkbox-row input[type="checkbox"] {
-      flex: 2;
+      flex: 1;
       /* Match the flex value of other inputs */
       width: auto;
       /* Let the checkbox determine its own width */
-      margin: 0;
+      margin-right: 0;
       /* Remove any default margins */
       text-align: left;
+    }
+
+    .checkbox-row div {
+      flex: 5;
     }
   </style>
 </head>
 
 <body>
   <div class="container">
-    <!-- First Column -->
+    <!-- BALANCE -->
     <div class="col1">
       <div class="row">
         <form class="form-container">
@@ -169,12 +174,34 @@
           <div class="form-row checkbox-row">
             <label for="hide-balance">Hide:</label>
             <input type="checkbox" id="hide-balance" name="hide-balance">
+            <div></div>
           </div>
         </form>
       </div>
-      <div class="row">Row 2</div>
+      <!-- AMOUNT -->
+      <div class="row">
+
+        <form class="form-container">
+          <div class="form-row">
+            <label for="amount">Amount:</label>
+            <input type="number" id="amount" name="amount">
+          </div>
+          <div class="form-row">
+            <label for="amount-hash">Hash:</label>
+            <input type="text" id="amount-hash" name="amount-hash" readonly>
+          </div>
+          <div class="form-row checkbox-row">
+            <label for="hide-amount">Hide:</label>
+            <input type="checkbox" id="hide-amount" name="hide-amount">
+            <div></div>
+          </div>
+        </form>
+      </div>
+      <!-- PROOF -->
       <div class="row">Row 3</div>
+      <!-- RESULT -->
       <div class="row">Row 4</div>
+      <!-- NONCE -->
       <div class="row">Row 5</div>
     </div>
 
@@ -211,6 +238,114 @@
       <div class="bottom">Bottom</div>
     </div>
   </div>
+
+
+
+
+  <script>
+    function hashToHexColor(hash, minBrightness = 0.3, maxBrightness = 0.8) {
+      if (!/^[0-9a-f]+$/i.test(hash)) {
+        throw new Error('Input must be a hexadecimal string');
+      }
+
+      let hexColor;
+      let isValid = false;
+      let attempts = 0;
+      const maxAttempts = 10;
+
+      // Try to find a color within brightness range
+      while (!isValid && attempts < maxAttempts) {
+        // Take different 6-character segments with each attempt
+        const startPos = attempts * 6 % (hash.length - 6);
+        hexColor = hash.substring(startPos, startPos + 6).padEnd(6, '0');
+
+        // Convert to RGB to check brightness
+        const r = parseInt(hexColor.substring(0, 2), 16) / 255;
+        const g = parseInt(hexColor.substring(2, 4), 16) / 255;
+        const b = parseInt(hexColor.substring(4, 6), 16) / 255;
+
+        // Calculate perceived brightness
+        const brightness = 0.299 * r + 0.587 * g + 0.114 * b;
+
+        if (brightness >= minBrightness && brightness <= maxBrightness) {
+          isValid = true;
+        }
+
+        attempts++;
+      }
+
+      return `#${hexColor}`;
+    }
+
+    /**
+     * INPUTS
+    */
+
+    const hideBalanceCheckbox = document.getElementById('hide-balance');
+    const balanceInput = document.getElementById('balance');
+    const balanceHashInput = document.getElementById('balance-hash');
+    const hideAmountCheckbox = document.getElementById('hide-amount');
+    const amountInput = document.getElementById('amount');
+    const amountHashInput = document.getElementById('amount-hash');
+
+    hideBalanceCheckbox.addEventListener('change', function () {
+      balanceInput.type = this.checked ? 'password' : 'number';
+    });
+
+    hideAmountCheckbox.addEventListener('change', function () {
+      amountInput.type = this.checked ? 'password' : 'number';
+    });
+
+    // Function to generate SHA-256 hash
+    async function generateSHA256Hash(message) {
+      // Encode the message as UTF-8
+      const msgBuffer = new TextEncoder().encode(message);
+
+      // Hash the message
+      const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+
+      // Convert ArrayBuffer to hex string
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+
+      return hashHex;
+    }
+
+
+    // Add event listener for input changes
+    balanceInput.addEventListener('input', async function () {
+      const balanceValue = balanceInput.value;
+
+      if (balanceValue) {
+        try {
+          const hash = await generateSHA256Hash(balanceValue);
+          balanceHashInput.value = hash;
+        } catch (error) {
+          console.error('Error generating hash:', error);
+          balanceHashInput.value = 'Error generating hash';
+        }
+      } else {
+        balanceHashInput.value = '';
+      }
+    });
+
+
+    amountInput.addEventListener('input', async function () {
+      const amountValue = amountInput.value;
+
+      if (amountValue) {
+        try {
+          const hash = await generateSHA256Hash(amountValue);
+          amountHashInput.value = hash;
+        } catch (error) {
+          console.error('Error generating hash:', error);
+          amountHashInput.value = 'Error generating hash';
+        }
+      } else {
+        amountHashInput.value = '';
+      }
+    });
+  </script>
 </body>
 
 </html>
